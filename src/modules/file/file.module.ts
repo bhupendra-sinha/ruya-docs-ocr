@@ -5,6 +5,7 @@ import { FileService } from './services/file.service';
 import { OcrService } from './services/ocr.service';
 import { OpenAiService } from './services/openAi.service';
 import { Pdf2ImageService } from './services/pdf2Image.service';
+import { EnhanceImageService } from './services/enhanceImage.service';
 
 const fileModule = new ContainerModule(bind => {
 	bind<FileController>(TYPES.FILE_CONTROLLER).to(FileController).inSingletonScope();
@@ -12,6 +13,7 @@ const fileModule = new ContainerModule(bind => {
 	bind<OcrService>(TYPES.OCR_SERVICE).to(OcrService).inSingletonScope();
 	bind<OpenAiService>(TYPES.OPENAI_SERVICE).to(OpenAiService).inSingletonScope();
 	bind<Pdf2ImageService>(TYPES.PDF2IMAGE_SERVICE).to(Pdf2ImageService).inSingletonScope();
+	bind<EnhanceImageService>(TYPES.ENHANCE_IMAGE_SERVICE).to(EnhanceImageService).inSingletonScope();
 });
 
 export default fileModule;

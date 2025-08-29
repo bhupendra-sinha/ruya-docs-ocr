@@ -1,10 +1,11 @@
 import { TYPES } from '@core/types';
 import { inject, injectable } from 'inversify';
 import { Logger } from 'winston';
-import { IFileService } from '../interfaces/file.interfaces';
+import { IFileService } from '../interfaces/file.interface';
 import { IOcrService } from '../interfaces/ocr.interface';
 import { IOpenAiService } from '../interfaces/openAI.interface';
 import { IPdf2ImageService } from '../interfaces/pdf2Image.interface';
+import { IEnhanceImageService } from '../interfaces/enhaceImage.interface';
 
 @injectable()
 export class FileService implements IFileService {
@@ -12,7 +13,8 @@ export class FileService implements IFileService {
 		@inject(TYPES.LOGGER) private readonly logger: Logger,
 		@inject(TYPES.OCR_SERVICE) private readonly ocrService: IOcrService,
 		@inject(TYPES.OPENAI_SERVICE) private readonly openAiService: IOpenAiService,
-		@inject(TYPES.PDF2IMAGE_SERVICE) private readonly pdf2ImageService: IPdf2ImageService
+		@inject(TYPES.PDF2IMAGE_SERVICE) private readonly pdf2ImageService: IPdf2ImageService,
+		@inject(TYPES.ENHANCE_IMAGE_SERVICE) private readonly enhanceImageService: IEnhanceImageService
 	) {}
 
 	async uploadFile(file: Express.Multer.File | undefined) {
@@ -25,7 +27,7 @@ export class FileService implements IFileService {
 		if (!file.mimetype.startsWith('image') && file.mimetype === 'application/pdf') {
 			imageBuffer = await this.pdf2ImageService.convertPdfToImage(file.buffer);
 		} else {
-			imageBuffer = file.buffer;
+			imageBuffer = await this.enhanceImageService.enhanceImage(file.buffer);
 		}
 
 		const text = await this.ocrService.extractTextFromImage(imageBuffer);
