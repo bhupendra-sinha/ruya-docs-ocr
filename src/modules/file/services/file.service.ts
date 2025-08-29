@@ -27,8 +27,10 @@ export class FileService implements IFileService {
 
 		const documentType = await this.openAiService.documentType(text);
 
-		this.logger.info('document type', documentType);
+		this.logger.info(`document type : ${documentType}`);
 
-		return text;
+		return {
+			documentType
+		};
 	}
 }

@@ -12,19 +12,26 @@ export class OpenAiService implements IOpenAiService {
 	) {}
 
 	async documentType(prompt: string) {
+		this.logger.info(`generating document type`);
 		const openai = await this.openaiConfig.getOpenAI();
 		const completion = await openai.chat.completions.create({
 			model: 'openai/gpt-4o',
 			messages: [
 				{
 					role: 'user',
-					content: `Please identify the type of document from the following text: ${prompt}`
+					content: `Please identify the type of document from the following text and give very short response: ${prompt}`,
+					name: 'documentType'
 				}
 			],
-			max_tokens: 1000
+			response_format: {
+				type: 'text'
+			},
+			max_tokens: 50,
+			n: 1,
+			temperature: 0,
+			top_p: 1
 		});
 
-		this.logger.info(completion.choices[0].message.content);
 		return completion.choices[0].message.content || '';
 	}
 }
