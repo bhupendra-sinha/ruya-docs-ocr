@@ -1,3 +1,6 @@
+import { FileDto } from '../data/response/file.dto';
+
 export interface IFileService {
-	uploadFile(file: Express.Multer.File | undefined): Promise<{ documentType: string }>;
+	uploadFiles(files: Express.Multer.File[] | undefined): Promise<FileDto[]>;
+	getDocumentType(file: Express.Multer.File): Promise<FileDto>;
 }

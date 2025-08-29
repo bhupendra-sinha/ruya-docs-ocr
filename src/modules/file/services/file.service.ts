@@ -6,6 +6,7 @@ import { IOcrService } from '../interfaces/ocr.interface';
 import { IOpenAiService } from '../interfaces/openAI.interface';
 import { IPdf2ImageService } from '../interfaces/pdf2Image.interface';
 import { IEnhanceImageService } from '../interfaces/enhaceImage.interface';
+import { FileDto } from '../data/response/file.dto';
 
 @injectable()
 export class FileService implements IFileService {
@@ -17,20 +18,33 @@ export class FileService implements IFileService {
 		@inject(TYPES.ENHANCE_IMAGE_SERVICE) private readonly enhanceImageService: IEnhanceImageService
 	) {}
 
-	async uploadFile(file: Express.Multer.File | undefined) {
+	async uploadFiles(files: Express.Multer.File[] | undefined): Promise<FileDto[]> {
 		this.logger.info('uploading file');
-		if (!file) {
+		if (!files) {
 			throw new Error(`File not found`);
 		}
 
-		let imageBuffer: Buffer;
-		if (!file.mimetype.startsWith('image') && file.mimetype === 'application/pdf') {
-			imageBuffer = await this.pdf2ImageService.convertPdfToImage(file.buffer);
-		} else {
-			imageBuffer = await this.enhanceImageService.enhanceImage(file.buffer);
+		const responseString: FileDto[] = [];
+
+		for (const file of files) {
+			responseString.push(await this.getDocumentType(file));
 		}
 
-		const text = await this.ocrService.extractTextFromImage(imageBuffer);
+		return responseString;
+	}
+
+	async getDocumentType(file: Express.Multer.File): Promise<FileDto> {
+		let imageBuffer: Buffer;
+		if (!file.mimetype.startsWith('image') && file.mimetype === 'application/pdf') {
+			// INFO :- we should direct extract text from pdf -> will do in enhancement
+			imageBuffer = await this.pdf2ImageService.convertPdfToImage(file.buffer);
+		} else {
+			imageBuffer = file.buffer;
+		}
+
+		const finalImageBuffer = await this.enhanceImageService.enhanceImage(imageBuffer);
+
+		const text = await this.ocrService.extractTextFromImage(finalImageBuffer);
 
 		if (!text || text.trim() === '') {
 			throw new Error(`Text not found`);
@@ -41,6 +55,7 @@ export class FileService implements IFileService {
 		this.logger.info(`document type : ${documentType}`);
 
 		return {
+			fileName: file.originalname,
 			documentType
 		};
 	}

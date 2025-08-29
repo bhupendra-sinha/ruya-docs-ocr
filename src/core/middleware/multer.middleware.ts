@@ -6,12 +6,12 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 export function fileUploadMiddleware(req: Request, res: Response, next: NextFunction) {
-	upload.single('file')(req, res, err => {
+	upload.array('files')(req, res, err => {
 		if (err) {
 			return res.status(400).json(AppResponse.error('FILE_UPLOAD_ERROR', err.message));
 		}
 
-		if (!req.file) {
+		if (!req.files || req.files.length === 0) {
 			return res.status(400).json(AppResponse.error('FILE_UPLOAD_ERROR', 'No file uploaded!'));
 		}
 

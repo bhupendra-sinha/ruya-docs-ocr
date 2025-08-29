@@ -14,7 +14,8 @@ export class FileController extends BaseHttpController {
 
 	@httpPost('/upload', fileUploadMiddleware)
 	async uploadFile(@request() req: Request) {
-		const file = await this.fileService.uploadFile(req.file);
+		const files = req?.files as Express.Multer.File[];
+		const file = await this.fileService.uploadFiles(files);
 		return this.ok(AppResponse.success(file));
 	}
 }

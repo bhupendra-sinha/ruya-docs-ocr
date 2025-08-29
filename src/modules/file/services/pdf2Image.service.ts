@@ -19,6 +19,7 @@ export class Pdf2ImageService implements IPdf2ImageService {
 			savePath: undefined
 		});
 
+		// INFO :- we can only fetch data from 1 page as of now !
 		const result = await converter(1, { responseType: 'buffer' });
 
 		if (!result.buffer) {
