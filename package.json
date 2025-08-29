@@ -25,6 +25,7 @@
     "multer": "^2.0.2",
     "node-tesseract-ocr": "^2.2.1",
     "nodemon": "^3.1.10",
+    "openai": "^5.16.0",
     "pdf2pic": "^3.2.0",
     "reflect-metadata": "^0.2.2",
     "ts-node": "^10.9.2",
