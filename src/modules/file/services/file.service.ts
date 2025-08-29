@@ -3,12 +3,14 @@ import { inject, injectable } from 'inversify';
 import { Logger } from 'winston';
 import { IFileService } from '../interfaces/file.interfaces';
 import { IOcrService } from '../interfaces/ocr.interface';
+import { IOpenAiService } from '../interfaces/openAI.interface';
 
 @injectable()
 export class FileService implements IFileService {
 	constructor(
 		@inject(TYPES.LOGGER) private readonly logger: Logger,
-		@inject(TYPES.OCR_SERVICE) private readonly ocrService: IOcrService
+		@inject(TYPES.OCR_SERVICE) private readonly ocrService: IOcrService,
+		@inject(TYPES.OPENAI_SERVICE) private readonly openAiService: IOpenAiService
 	) {}
 
 	async uploadFile(file: Express.Multer.File | undefined) {
@@ -18,7 +20,14 @@ export class FileService implements IFileService {
 		}
 
 		const text = await this.ocrService.extractTextFromImage(file.buffer);
-		this.logger.info('extracted text from image', text);
+
+		if (!text || text.trim() === '') {
+			throw new Error(`Text not found`);
+		}
+
+		const documentType = await this.openAiService.documentType(text);
+
+		this.logger.info('document type', documentType);
 
 		return text;
 	}

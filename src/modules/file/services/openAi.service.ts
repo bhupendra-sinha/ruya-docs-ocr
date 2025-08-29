@@ -18,12 +18,13 @@ export class OpenAiService implements IOpenAiService {
 			messages: [
 				{
 					role: 'user',
-					content: prompt
+					content: `Please identify the type of document from the following text: ${prompt}`
 				}
-			]
+			],
+			max_tokens: 1000
 		});
 
-		this.logger.info(completion.choices[0].message);
+		this.logger.info(completion.choices[0].message.content);
 		return completion.choices[0].message.content || '';
 	}
 }
