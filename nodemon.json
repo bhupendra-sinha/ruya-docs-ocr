@@ -1,0 +1,8 @@
+{
+  "watch": ["src"],
+  "ext": "ts",
+  "env": {
+    "NODE_ENV": "local"
+  },
+  "exec": "ts-node -r tsconfig-paths/register -r dotenv/config src/index.ts"
+}
