@@ -28,8 +28,7 @@ export class FileService implements IFileService {
 			imageBuffer = file.buffer;
 		}
 
-		console.log(imageBuffer);
-		const text = await this.ocrService.extractTextFromImage(file.buffer);
+		const text = await this.ocrService.extractTextFromImage(imageBuffer);
 
 		if (!text || text.trim() === '') {
 			throw new Error(`Text not found`);

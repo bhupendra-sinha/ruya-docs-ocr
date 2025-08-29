@@ -12,7 +12,10 @@ export class Pdf2ImageService implements IPdf2ImageService {
 		this.logger.info('converting pdf to image');
 		const converter = fromBuffer(pdfBuffer, {
 			density: 300,
-			format: 'png',
+			format: 'jpg',
+			height: 1000,
+			width: 1000,
+			quality: 1000,
 			savePath: undefined
 		});
 
@@ -22,6 +25,7 @@ export class Pdf2ImageService implements IPdf2ImageService {
 			this.logger.error('Failed to convert PDF to image');
 			return Buffer.from('');
 		}
+
 		return result.buffer;
 	}
 }
