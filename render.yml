@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: backend
+    env: node
+    plan: free
+    buildCommand: |
+      apt-get update && apt-get install -y tesseract-ocr
+      yarn install --frozen-lockfile
+    startCommand: yarn start
+    envVars:
+      - key: NODE_ENV
+        value: production
