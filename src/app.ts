@@ -6,6 +6,7 @@ import { inject, injectable } from 'inversify';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import express from 'express';
 import cors from 'cors';
+import { ErrorHandlerMiddleware } from '@core/error/errorhandling.middleware';
 
 @injectable()
 export class Application {
@@ -14,7 +15,8 @@ export class Application {
 
 	constructor(
 		@inject(TYPES.LOGGER) private logger: ILogger,
-		@inject(TYPES.CONFIG) private config: ConfigService
+		@inject(TYPES.CONFIG) private config: ConfigService,
+		@inject(TYPES.ERROR_HANDLER_MIDDLEWARE) private errorHandler: ErrorHandlerMiddleware
 	) {
 		this.server = new InversifyExpressServer(container);
 	}
@@ -34,14 +36,9 @@ export class Application {
 				next();
 			});
 
-			// INFO :- Swagger docs
-			// app.use(
-			// 	'/docs',
-			// 	swaggerUi.serve,
-			// 	swaggerUi.setup(swaggerDocument, {
-			// 		customSiteTitle: 'Ruya Bank API Docs'
-			// 	})
-			// );
+			this.server.setErrorConfig(app => {
+				app.use(this.errorHandler.handle.bind(this.errorHandler));
+			});
 		});
 	}
 

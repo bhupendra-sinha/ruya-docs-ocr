@@ -1,7 +1,8 @@
 const CORE_TYPES = {
 	CONFIG: Symbol.for('CONFIG'),
 	LOGGER: Symbol.for('LOGGER'),
-	OPENAI_CONFIG: Symbol.for('OPENAI_CONFIG')
+	OPENAI_CONFIG: Symbol.for('OPENAI_CONFIG'),
+	ERROR_HANDLER_MIDDLEWARE: Symbol.for('ERROR_HANDLER_MIDDLEWARE')
 };
 
 const FILE_TYPES = {

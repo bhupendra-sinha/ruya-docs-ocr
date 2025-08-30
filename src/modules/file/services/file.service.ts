@@ -7,6 +7,7 @@ import { IOpenAiService } from '../interfaces/openAI.interface';
 import { IPdf2ImageService } from '../interfaces/pdf2Image.interface';
 import { IEnhanceImageService } from '../interfaces/enhaceImage.interface';
 import { FileDto } from '../data/response/file.dto';
+import { NotFoundError } from '@core/data/error/app.error';
 
 @injectable()
 export class FileService implements IFileService {
@@ -21,7 +22,7 @@ export class FileService implements IFileService {
 	async uploadFiles(files: Express.Multer.File[] | undefined): Promise<FileDto[]> {
 		this.logger.info('uploading file');
 		if (!files) {
-			throw new Error(`File not found`);
+			throw new NotFoundError(`File not found`);
 		}
 
 		const responseString: FileDto[] = [];
@@ -47,7 +48,7 @@ export class FileService implements IFileService {
 		const text = await this.ocrService.extractTextFromImage(finalImageBuffer);
 
 		if (!text || text.trim() === '') {
-			throw new Error(`Text not found`);
+			throw new NotFoundError('Text not found');
 		}
 
 		const documentType = await this.openAiService.documentType(text);
