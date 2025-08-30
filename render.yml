@@ -5,6 +5,7 @@ services:
     plan: free
     buildCommand: |
       apt-get update && apt-get install -y tesseract-ocr
+      tesseract --version 
       yarn install --frozen-lockfile
     startCommand: yarn start
     envVars:
