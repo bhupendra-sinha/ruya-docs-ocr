@@ -25,7 +25,7 @@ export class ConfigService {
 	}
 
 	getCorsConfig(): CorsConfig {
-		const allowedOrigins = [this.env.FE_APP_URL, this.env.SERVER_URL];
+		const allowedOrigins = ['http://localhost:5173', this.env.FE_APP_URL];
 
 		return {
 			origin: allowedOrigins,
